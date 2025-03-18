@@ -1,0 +1,116 @@
+@using CVProfile.Models
+@using CVProfile.Data
+@inject ApplicationDbContext Context
+
+<div class="skills-section">
+    <h2>Technical Skills</h2>
+    
+    <div class="skills-grid">
+        @if (Skills != null)
+        {
+            @foreach (var skill in Skills)
+            {
+                <div class="skill-card">
+                    <h3>@skill.TechnologyName</h3>
+                    <div class="skill-details">
+                        <div class="experience">
+                            <span>Experience: @skill.YearsOfExperience years</span>
+                        </div>
+                        <div class="skill-level">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: @(skill.SkillLevel * 20)%"
+                                     aria-valuenow="@skill.SkillLevel"
+                                     aria-valuemin="0"
+                                     aria-valuemax="5">
+                                    Level @skill.SkillLevel/5
+                                </div>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(skill.Description))
+                        {
+                            <p class="skill-description">@skill.Description</p>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<style>
+    .skills-section {
+        padding: 2rem 1rem;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .skill-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .skill-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .skill-card h3 {
+        margin: 0 0 1rem 0;
+        color: #333;
+    }
+
+    .skill-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .experience {
+        color: #666;
+    }
+
+    .progress {
+        height: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background-color: #0066cc;
+        color: white;
+        text-align: center;
+        line-height: 20px;
+        transition: width 0.3s ease;
+    }
+
+    .skill-description {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+        .skills-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+@code {
+    private List<Skill>? Skills { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Skills = await Context.Skills.ToListAsync();
+    }
+} 

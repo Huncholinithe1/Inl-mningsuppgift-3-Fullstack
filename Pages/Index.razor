@@ -1,0 +1,131 @@
+@page "/"
+
+<div class="cv-container">
+    <header class="cv-header">
+        <div class="profile-section">
+            <img src="/images/profile.jpg" alt="Your professional headshot" class="profile-image" />
+            <div class="profile-info">
+                <h1>Your Name</h1>
+                <h2>Full Stack Developer</h2>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-linkedin" aria-label="LinkedIn Profile"></i>
+                    </a>
+                    <a href="https://github.com/your-profile" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-github" aria-label="GitHub Profile"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="about-section">
+            <h2>About Me</h2>
+            <p>
+                A passionate full-stack developer with a focus on creating efficient and user-friendly web applications.
+                Currently studying at IT-Högskolan, where I'm developing my skills in modern web technologies and best practices.
+            </p>
+        </section>
+
+        <SkillsSection />
+
+        <ProjectsSection />
+    </main>
+</div>
+
+<style>
+    .cv-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .cv-header {
+        margin-bottom: 3rem;
+    }
+
+    .profile-section {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .profile-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .profile-info {
+        flex: 1;
+    }
+
+    .profile-info h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    .profile-info h2 {
+        margin: 0.5rem 0 1rem;
+        font-size: 1.5rem;
+        color: #666;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .social-links a {
+        color: #333;
+        font-size: 1.5rem;
+        transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+        color: #0066cc;
+    }
+
+    .about-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 3rem;
+    }
+
+    .about-section h2 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    .about-section p {
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .cv-container {
+            padding: 1rem;
+        }
+
+        .profile-section {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+        }
+
+        .social-links {
+            justify-content: center;
+        }
+    }
+</style> 

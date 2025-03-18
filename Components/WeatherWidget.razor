@@ -1,0 +1,117 @@
+@inject IConfiguration Configuration
+@inject HttpClient Http
+
+<div class="weather-widget">
+    @if (isLoading)
+    {
+        <div class="loading">Loading weather data...</div>
+    }
+    else if (weatherData != null)
+    {
+        <div class="weather-content">
+            <div class="weather-icon">
+                <img src="@($"http://openweathermap.org/img/w/{weatherData.Weather[0].Icon}.png")" 
+                     alt="@weatherData.Weather[0].Description" />
+            </div>
+            <div class="weather-info">
+                <div class="temperature">@((int)weatherData.Main.Temp)°C</div>
+                <div class="description">@weatherData.Weather[0].Description</div>
+                <div class="location">@weatherData.Name</div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .weather-widget {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .weather-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .weather-icon img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .weather-info {
+        flex: 1;
+    }
+
+    .temperature {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .description {
+        color: #666;
+        text-transform: capitalize;
+    }
+
+    .location {
+        font-size: 0.9rem;
+        color: #999;
+    }
+
+    .loading {
+        text-align: center;
+        color: #666;
+        padding: 1rem;
+    }
+</style>
+
+@code {
+    private WeatherData? weatherData;
+    private bool isLoading = true;
+    private string city = "Stockholm"; // Default city
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetWeatherData();
+    }
+
+    private async Task GetWeatherData()
+    {
+        try
+        {
+            var apiKey = Configuration["OpenWeatherMap:ApiKey"];
+            var url = $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
+            weatherData = await Http.GetFromJsonAsync<WeatherData>(url);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching weather data: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private class WeatherData
+    {
+        public MainData Main { get; set; } = new();
+        public WeatherInfo[] Weather { get; set; } = Array.Empty<WeatherInfo>();
+        public string Name { get; set; } = string.Empty;
+    }
+
+    private class MainData
+    {
+        public float Temp { get; set; }
+    }
+
+    private class WeatherInfo
+    {
+        public string Description { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+    }
+} 

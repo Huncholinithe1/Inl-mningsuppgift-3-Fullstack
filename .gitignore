@@ -1,0 +1,33 @@
+# .NET Core build folders
+bin/
+obj/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio files
+.vs/
+*.vspscc
+*.vssscc
+
+# Rider
+.idea/
+
+# User secrets
+appsettings.Development.json
+appsettings.Production.json
+appsettings.json
+
+# Logs
+*.log
+
+# Azure deployment settings
+*.pubxml
+*.pubxml.user
+
+# Others
+*.swp
+.DS_Store 

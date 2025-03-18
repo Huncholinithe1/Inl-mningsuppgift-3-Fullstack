@@ -1,0 +1,276 @@
+@page "/admin"
+@using Microsoft.AspNetCore.Authorization
+@using CVProfile.Models
+@using CVProfile.Data
+@attribute [Authorize]
+@inject ApplicationDbContext Context
+@inject NavigationManager NavigationManager
+
+<h1>Admin Dashboard</h1>
+
+<div class="admin-container">
+    <div class="section">
+        <h2>Add/Edit Skills</h2>
+        <EditForm Model="@newSkill" OnValidSubmit="HandleSkillSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="technologyName">Technology Name:</label>
+                <InputText id="technologyName" @bind-Value="newSkill.TechnologyName" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="yearsExperience">Years of Experience:</label>
+                <InputNumber id="yearsExperience" @bind-Value="newSkill.YearsOfExperience" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="skillLevel">Skill Level (1-5):</label>
+                <InputNumber id="skillLevel" @bind-Value="newSkill.SkillLevel" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <InputTextArea id="description" @bind-Value="newSkill.Description" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Skill</button>
+        </EditForm>
+
+        <div class="skills-list">
+            <h3>Existing Skills</h3>
+            @if (skills != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Technology</th>
+                            <th>Experience</th>
+                            <th>Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var skill in skills)
+                        {
+                            <tr>
+                                <td>@skill.TechnologyName</td>
+                                <td>@skill.YearsOfExperience years</td>
+                                <td>@skill.SkillLevel/5</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteSkill(skill)">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Add/Edit Projects</h2>
+        <EditForm Model="@newProject" OnValidSubmit="HandleProjectSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="projectName">Project Name:</label>
+                <InputText id="projectName" @bind-Value="newProject.Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="projectDescription">Description:</label>
+                <InputTextArea id="projectDescription" @bind-Value="newProject.Description" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="completionDate">Completion Date:</label>
+                <InputDate id="completionDate" @bind-Value="newProject.CompletionDate" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="githubUrl">GitHub URL:</label>
+                <InputText id="githubUrl" @bind-Value="newProject.GitHubUrl" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="technologies">Technologies (comma-separated):</label>
+                <InputText id="technologies" @bind-Value="newProject.Technologies" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="imageUrl">Image URL:</label>
+                <InputText id="imageUrl" @bind-Value="newProject.ImageUrl" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Project</button>
+        </EditForm>
+
+        <div class="projects-list">
+            <h3>Existing Projects</h3>
+            @if (projects != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Completion Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var project in projects)
+                        {
+                            <tr>
+                                <td>@project.Name</td>
+                                <td>@project.CompletionDate.ToString("MMMM yyyy")</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteProject(project)">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 0.25rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #0066cc;
+        color: white;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .table {
+        width: 100%;
+        margin-top: 1rem;
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 1rem;
+        }
+
+        .section {
+            padding: 1rem;
+        }
+    }
+</style>
+
+@code {
+    private Skill newSkill = new();
+    private Project newProject = new() { CompletionDate = DateTime.Today };
+    private List<Skill>? skills;
+    private List<Project>? projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        skills = await Context.Skills.ToListAsync();
+        projects = await Context.Projects.ToListAsync();
+    }
+
+    private async Task HandleSkillSubmit()
+    {
+        if (newSkill.Id == 0)
+        {
+            Context.Skills.Add(newSkill);
+        }
+        else
+        {
+            Context.Skills.Update(newSkill);
+        }
+        
+        await Context.SaveChangesAsync();
+        newSkill = new();
+        await LoadData();
+    }
+
+    private async Task HandleProjectSubmit()
+    {
+        if (newProject.Id == 0)
+        {
+            Context.Projects.Add(newProject);
+        }
+        else
+        {
+            Context.Projects.Update(newProject);
+        }
+        
+        await Context.SaveChangesAsync();
+        newProject = new() { CompletionDate = DateTime.Today };
+        await LoadData();
+    }
+
+    private async Task DeleteSkill(Skill skill)
+    {
+        Context.Skills.Remove(skill);
+        await Context.SaveChangesAsync();
+        await LoadData();
+    }
+
+    private async Task DeleteProject(Project project)
+    {
+        Context.Projects.Remove(project);
+        await Context.SaveChangesAsync();
+        await LoadData();
+    }
+} 
